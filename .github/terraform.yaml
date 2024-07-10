@@ -1,0 +1,144 @@
+name: Deploy/Destroy Terraform
+
+on:
+  workflow_dispatch:
+    inputs:
+      google-credentials:
+        description: 'Google Cloud Service Account JSON'
+        required: true
+        type: string
+      terraform-action:
+        description: 'Apply or Destroy'
+        required: true
+        type: choice
+        options: 
+        - apply
+        - destroy
+      gcp-region:
+        description: 'Google Cloud Region'
+        required: false
+        type: string
+        default: 'us-west1'
+      company:
+        description: 'Company name'
+        required: false
+        type: string
+        default: 'superlinked'
+      environment:
+        description: 'Environment'
+        required: false
+        type: string
+        default: 'dev'
+
+jobs:
+  terraform_apply:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.ref }}
+        
+    # Determine the current branch name
+    - name: Set branch related envs
+      id: getbranch
+      run: |
+        branch_name=$(git branch --show-current)
+        echo "CURRENT_BRANCH=$branch_name" >> $GITHUB_ENV
+        unique_suffix="lint-changes-$(date +'%Y%m%d%H%M%S')"
+        echo BRANCH_NAME="$branch_name-$unique_suffix"  >> $GITHUB_ENV
+
+    - name: Install Terraform
+      run: |
+        # Install the latest version of Terraform
+        TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')
+        wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+        unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+        terraform version
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ github.event.inputs.google-credentials }}
+
+    - name: Set up Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        export_default_credentials: true
+
+    - name: Configure Google Cloud Credentials
+      run: |
+        gcloud auth activate-service-account --key-file=${{ github.event.inputs.google-credentials }}
+
+    - name: Check if GCS State Bucket exists
+      run: |
+        bucket_name="${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}"
+        gsutil ls -b gs://$bucket_name || gsutil mb -l ${{ github.event.inputs.gcp-region }} gs://$bucket_name
+
+    - name: Check and Create Firestore Collection
+      run: |
+        COLLECTION_NAME="${{ github.event.inputs.company }}-terraform-lock-${{ github.event.inputs.environment }}"
+        gcloud firestore databases describe || gcloud firestore databases create
+        # Firestore collections are created when data is added, so we'll create a document to ensure the collection exists.
+        gcloud firestore documents create $COLLECTION_NAME --data='{"initialized": true}'
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+          -backend-config="bucket=${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}" \
+          -backend-config="prefix=terraform/state" \
+          -backend-config="project=${{ secrets.GCP_PROJECT_ID }}" \
+          -backend-config="region=${{ github.event.inputs.gcp-region }}" 
+
+    - name: Terraform Format
+      run: terraform fmt
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Apply
+      env:
+        TF_INPUT: 0
+      run: |
+        terraform ${{ github.event.inputs.terraform-action }} \
+          -var="gcp_region=${{ github.event.inputs.gcp-region }}" \
+          -var="company=${{ github.event.inputs.company }}" \
+          -var="environment=${{ github.event.inputs.environment }}" \
+          -auto-approve
+          
+    - name: Set Outputs as Env Vars
+      run: |
+        echo "API_ENDPOINT=$(terraform output -raw api_gateway_endpoint)" >> $GITHUB_ENV
+        echo "API_KEY=$(terraform output -raw api_key)" >> $GITHUB_ENV
+
+    - name: Test API Endpoint
+      run: |
+        curl_command="curl -X POST -H 'Content-Type: application/json' -H 'x-api-key: ${{ env.API_KEY }}' -d '{\"message\": \"Example message\", \"target\": \"example.com\"}' ${{ env.API_ENDPOINT }}"
+        echo "Executing: $curl_command"
+        echo "$curl_command" >> $GITHUB_STEP_SUMMARY
+
+    # Check if linting made any changes
+    - name: Check for modified files
+      id: git-check
+      run: |
+        git diff --exit-code || echo "##[set-output name=changed;]true"
+
+    - name: Run the Action
+      if: steps.git-check.outputs.changed == 'true'
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: "${{ secrets.GITHUB_TOKEN }}"
+        add_timestamp: false
+        commit_prefix: "[AUTO] "
+        commit_message: "automated Terraform fmt fixes from the GitHub Actions workflow"
+        force: false
+        target_branch: ${{ env.BRANCH_NAME }}
+
+    - name: Create Pull Request
+      if: steps.git-check.outputs.changed == 'true'
+      run: |
+        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+        gh pr create --base ${{ env.CURRENT_BRANCH }} --head ${{ env.BRANCH_NAME }} --title "Automated Terraform format for ${{ env.CURRENT_BRANCH }} branch" --body "This PR contains automated lint fixes for ${{ env.CURRENT_BRANCH }} branch"
