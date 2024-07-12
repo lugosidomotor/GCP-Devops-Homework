@@ -64,6 +64,13 @@ jobs:
       with:
         export_default_credentials: true
 
+    - name: Enable APIs
+      run: |
+        gcloud config set project ${{ secrets.PROJECTID }}
+        gcloud services enable iam.googleapis.com
+        gcloud services enable compute.googleapis.com
+        gcloud services enable container.googleapis.com
+
     - name: Check if GCS State Bucket exists
       run: |
         bucket_name="${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}"
