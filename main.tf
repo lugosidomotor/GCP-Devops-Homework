@@ -39,10 +39,10 @@ module "storage" {
 # Generate kubeconfig file
 resource "local_file" "kubeconfig" {
   content  = templatefile("${path.module}/kubeconfig.tpl", {
-    cluster_name = google_container_cluster.primary.name
-    endpoint     = google_container_cluster.primary.endpoint
-    cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
-    token        = data.google_client_config.default.access_token
+    cluster_name           = module.gke.cluster_name
+    endpoint               = module.gke.endpoint
+    cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
+    token                  = data.google_client_config.default.access_token
   })
   filename = "${path.module}/kubeconfig"
 }
