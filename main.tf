@@ -22,7 +22,11 @@ module "gke" {
 module "storage" {
   source      = "./modules/storage"
   project_id  = var.project_id
-  bucket_name = var.bucket_name
+  bucket_name = random_id.bucket_id.hex
+}
+
+resource "random_id" "bucket_id" {
+  byte_length = 8
 }
 
 output "gke_cluster_name" {
