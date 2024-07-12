@@ -67,6 +67,17 @@ resource "helm_release" "mlflow" {
   depends_on = [local_file.kubeconfig]
 }
 
+output "cluster_name" {
+  value = google_container_cluster.primary.name
+}
+
+output "endpoint" {
+  value = google_container_cluster.primary.endpoint
+}
+
+output "cluster_ca_certificate" {
+  value = google_container_cluster.primary.master_auth[0].cluster_ca_certificate
+}
 
 resource "random_id" "bucket_id" {
   byte_length = 8
