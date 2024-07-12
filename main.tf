@@ -14,8 +14,8 @@ module "network" {
 module "gke" {
   source          = "./modules/gke"
   project_id      = var.project_id
-  cluster_name    = var.cluster_name
   region          = var.region
+  cluster_name    = var.cluster_name
   network         = module.network.network_name
   subnetwork      = module.network.subnetwork_name
 }
@@ -23,7 +23,7 @@ module "gke" {
 module "storage" {
   source      = "./modules/storage"
   project_id  = var.project_id
-  bucket_name = random_id.bucket_id.hex
+  bucket_name = "streamlit-bucket-${random_id.bucket_id.hex}"
 }
 
 resource "random_id" "bucket_id" {
@@ -31,7 +31,7 @@ resource "random_id" "bucket_id" {
 }
 
 output "gke_cluster_name" {
-  value = module.gke.cluster_name
+  value = module.gke.cluster_name_output
 }
 
 output "bucket_name" {
