@@ -3,6 +3,16 @@ provider "google" {
   region  = var.region
 }
 
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
 module "network" {
   source         = "./modules/network"
   project_id     = var.project_id
