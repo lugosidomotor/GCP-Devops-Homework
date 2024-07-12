@@ -35,20 +35,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{ github.ref }}
-
-    - name: Decode and Debug GCP Credentials
-      run: |
-        decoded_json=$(echo '${{ secrets.JSON }}' | base64 --decode)
-        echo "$decoded_json"
-        echo "$decoded_json" | jq .
-
-    - name: Extract Project ID
-      id: extract-project-id
-      run: |
-        decoded_json=$(echo '${{ secrets.JSON }}' | base64 --decode)
-        project_id=$(echo "$decoded_json" | jq -r .project_id)
-        echo "project_id=$project_id"
-        echo "PROJECT_ID=$project_id" >> $GITHUB_ENV
         
     # Determine the current branch name
     - name: Set branch related envs
@@ -88,7 +74,7 @@ jobs:
         terraform init \
           -backend-config="bucket=${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}" \
           -backend-config="prefix=terraform/state" \
-          -backend-config="project=$PROJECT_ID" \
+          -backend-config="project=${{ secrets.PROJECT_ID }}" \
           -backend-config="region=${{ github.event.inputs.gcp-region }}" 
 
     - name: Terraform Format
@@ -102,7 +88,7 @@ jobs:
         TF_INPUT: 0
       run: |
         terraform ${{ github.event.inputs.terraform-action }} \
-          -var="project_id=$PROJECT_ID" \
+          -var="project_id=${{ secrets.PROJECT_ID }}" \
           -var="region=${{ github.event.inputs.gcp-region }}" \
           -var="cluster_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
           -auto-approve
