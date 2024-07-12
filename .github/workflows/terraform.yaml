@@ -70,13 +70,6 @@ jobs:
         bucket_name="${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}"
         gsutil ls -b gs://$bucket_name || gsutil mb -l ${{ github.event.inputs.gcp-region }} gs://$bucket_name
 
-    - name: Check and Create Firestore Collection
-      run: |
-        COLLECTION_NAME="${{ github.event.inputs.company }}-terraform-lock-${{ github.event.inputs.environment }}"
-        gcloud firestore databases describe || gcloud firestore databases create
-        # Firestore collections are created when data is added, so we'll create a document to ensure the collection exists.
-        gcloud firestore documents create $COLLECTION_NAME --data='{"initialized": true}'
-
     - name: Terraform Init
       run: |
         terraform init \
