@@ -29,11 +29,3 @@ module "storage" {
 resource "random_id" "bucket_id" {
   byte_length = 8
 }
-
-output "gke_cluster_name" {
-  value = module.gke.cluster_name_output
-}
-
-output "bucket_name" {
-  value = module.storage.bucket_name
-}
