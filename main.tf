@@ -52,7 +52,7 @@ data "google_client_config" "default" {}
 # Deploy Streamlit using Helm
 resource "helm_release" "streamlit" {
   name       = "streamlit"
-  repository = "https://charts.bitnami.com/bitnami"
+  repository = "https://samdobson.github.io/helm"
   chart      = "streamlit"
   namespace  = "default"
   depends_on = [local_file.kubeconfig]
@@ -61,7 +61,7 @@ resource "helm_release" "streamlit" {
 # Deploy MLflow using Helm
 resource "helm_release" "mlflow" {
   name       = "mlflow"
-  repository = "https://charts.helm.sh/stable"
+  repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "mlflow"
   namespace  = "default"
   depends_on = [local_file.kubeconfig]
