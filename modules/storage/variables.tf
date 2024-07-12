@@ -8,5 +8,5 @@ variable "bucket_name" {
 
 variable "location" {
   type    = string
-  default = "US"
+  default = "us-west1"
 }
