@@ -38,7 +38,7 @@ jobs:
 
     - name: Extract Project ID
       run: |
-        echo "PROJECT_ID=$(echo '${{ secrets.GCP_CREDENTIALS }}' | base64 --decode | jq -r .project_id)" >> $GITHUB_ENV
+        echo "PROJECT_ID=$(echo '${{ secrets.JSON }}' | base64 --decode | jq -r .project_id)" >> $GITHUB_ENV
         echo "Extracted PROJECT_ID: $PROJECT_ID"
         
     # Determine the current branch name
