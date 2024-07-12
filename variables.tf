@@ -26,9 +26,3 @@ variable "cluster_name" {
   type        = string
   default     = "streamlit-cluster"
 }
-
-variable "bucket_name" {
-  description = "Name of the GCS bucket"
-  type        = string
-  default     = "streamlit-bucket-${random_id.bucket_id.hex}"
-}
