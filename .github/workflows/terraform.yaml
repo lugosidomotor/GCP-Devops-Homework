@@ -37,8 +37,8 @@ jobs:
         ref: ${{ github.ref }}
 
     - name: Extract Project ID
-      id: extract-project-id
-      run: echo "::set-output name=project_id::$(echo ${{ secrets.JSON }} | jq -r .project_id)"
+      run: |
+        echo "PROJECT_ID=$(echo '${{ secrets.GCP_CREDENTIALS }}' | base64 --decode | jq -r .project_id)" >> $GITHUB_ENV
         
     # Determine the current branch name
     - name: Set branch related envs
@@ -79,7 +79,7 @@ jobs:
         terraform init \
           -backend-config="bucket=${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}" \
           -backend-config="prefix=terraform/state" \
-          -backend-config="project=${{ steps.extract-project-id.outputs.project_id }}" \
+          -backend-config="project=$PROJECT_ID" \
           -backend-config="region=${{ github.event.inputs.gcp-region }}" 
 
     - name: Terraform Format
@@ -93,7 +93,7 @@ jobs:
         TF_INPUT: 0
       run: |
         terraform ${{ github.event.inputs.terraform-action }} \
-          -var="project_id=${{ steps.extract-project-id.outputs.project_id }}" \
+          -var="project_id=$PROJECT_ID" \
           -var="region=${{ github.event.inputs.gcp-region }}" \
           -var="cluster_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
           -auto-approve
