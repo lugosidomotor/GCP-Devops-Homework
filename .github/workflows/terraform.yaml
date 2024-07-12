@@ -89,8 +89,9 @@ jobs:
         TF_INPUT: 0
       run: |
         terraform ${{ github.event.inputs.terraform-action }} \
-          -var="gcp_region=${{ github.event.inputs.gcp-region }}" \
-          -var="company=${{ github.event.inputs.company }}" \
+          -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
+          -var="region=${{ github.event.inputs.gcp-region }}" \
+          -var="cluster_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
           -auto-approve
 
     # Check if linting made any changes
