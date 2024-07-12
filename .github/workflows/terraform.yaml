@@ -3,10 +3,6 @@ name: Deploy/Destroy Terraform
 on:
   workflow_dispatch:
     inputs:
-      google-credentials:
-        description: 'Google Cloud Service Account JSON'
-        required: true
-        type: string
       terraform-action:
         description: 'Apply or Destroy'
         required: true
@@ -71,7 +67,7 @@ jobs:
 
     - name: Configure Google Cloud Credentials
       run: |
-        gcloud auth activate-service-account --key-file=${{ github.event.inputs.google-credentials }}
+        gcloud auth activate-service-account --key-file=${{ secrets.JSON }}
 
     - name: Check if GCS State Bucket exists
       run: |
