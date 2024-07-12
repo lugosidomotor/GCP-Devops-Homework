@@ -6,7 +6,7 @@ variable "project_id" {
 variable "region" {
   description = "The region to deploy resources"
   type        = string
-  default     = "us-central1"
+  default     = "us-west1"
 }
 
 variable "network_name" {
