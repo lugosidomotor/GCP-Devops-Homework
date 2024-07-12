@@ -2,10 +2,8 @@ resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.region
 
-  networking {
-    network    = var.network
-    subnetwork = var.subnetwork
-  }
+  network    = var.network
+  subnetwork = var.subnetwork
 
   remove_default_node_pool = true
 
@@ -25,8 +23,4 @@ resource "google_container_node_pool" "primary_nodes" {
       "https://www.googleapis.com/auth/cloud-platform"
     ]
   }
-}
-
-output "cluster_name" {
-  value = google_container_cluster.primary.name
 }
