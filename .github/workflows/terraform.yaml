@@ -80,9 +80,7 @@ jobs:
       run: |
         terraform init \
           -backend-config="bucket=${{ github.event.inputs.company }}-terraform-state-${{ github.event.inputs.environment }}" \
-          -backend-config="prefix=terraform/state" \
-          -backend-config="project=${{ secrets.PROJECTID }}" \
-          -backend-config="region=${{ github.event.inputs.gcp-region }}" 
+          -backend-config="prefix=terraform/state"
 
     - name: Terraform Format
       run: terraform fmt
