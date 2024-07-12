@@ -67,7 +67,7 @@ jobs:
 
     - name: Configure Google Cloud Credentials
       run: |
-        echo "${{ secrets.JSON }}" > $HOME/gcloud-service-key.json
+        echo "${{ secrets.JSON }}" > | base64 --decode > $HOME/gcloud-service-key.json
         gcloud auth activate-service-account --key-file=$HOME/gcloud-service-key.json
 
     - name: Check if GCS State Bucket exists
