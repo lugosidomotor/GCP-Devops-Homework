@@ -36,11 +36,16 @@ jobs:
       with:
         ref: ${{ github.ref }}
 
+    - name: Decode and Debug GCP Credentials
+      run: |
+        decoded_json=$(echo '${{ secrets.JSON }}' | base64 --decode)
+        echo "$decoded_json"
+        echo "$decoded_json" | jq .
+
     - name: Extract Project ID
       id: extract-project-id
       run: |
         decoded_json=$(echo '${{ secrets.JSON }}' | base64 --decode)
-        echo "$decoded_json" | jq .
         project_id=$(echo "$decoded_json" | jq -r .project_id)
         echo "project_id=$project_id"
         echo "PROJECT_ID=$project_id" >> $GITHUB_ENV
