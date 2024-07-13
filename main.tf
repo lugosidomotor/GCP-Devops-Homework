@@ -70,24 +70,3 @@ resource "helm_release" "mlflow" {
 resource "random_id" "bucket_id" {
   byte_length = 8
 }
-
-output "cluster_name" {
-  value = nonsensitive(module.gke.cluster_name)
-}
-
-output "endpoint" {
-  value = nonsensitive(module.gke.endpoint)
-}
-
-output "cluster_ca_certificate" {
-  value = nonsensitive(module.gke.cluster_ca_certificate)
-}
-
-output "token" {
-  value = nonsensitive(data.google_client_config.default.access_token)
-}
-
-output "kubeconfig_content" {
-  value = nonsensitive(local_file.kubeconfig.content)
-}
-
