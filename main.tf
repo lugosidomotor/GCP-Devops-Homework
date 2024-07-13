@@ -51,17 +51,6 @@ module "storage" {
   bucket_name = "streamlit-bucket-${random_id.bucket_id.hex}"
 }
 
-# Generate kubeconfig file
-resource "local_file" "kubeconfig" {
-  content  = templatefile("${path.module}/kubeconfig.tpl", {
-    cluster_name           = module.gke.cluster_name
-    endpoint               = module.gke.endpoint
-    cluster_ca_certificate = base64decode(module.gke.cluster_ca_certificate)
-    token                  = data.google_client_config.default.access_token
-  })
-  filename = "${path.module}/kubeconfig"
-}
-
 # Deploy Streamlit using Helm
 resource "helm_release" "streamlit" {
   name       = "streamlit"
