@@ -69,7 +69,7 @@ resource "helm_release" "streamlit" {
     value = "LoadBalancer"
   }
 
-  depends_on = [module.gke]
+  depends_on = [module.gke, kubernetes_provider]
 }
 
 resource "helm_release" "mlflow" {
@@ -88,5 +88,5 @@ resource "helm_release" "mlflow" {
     value = "LoadBalancer"
   }
 
-  depends_on = [module.gke]
+  depends_on = [module.gke, kubernetes_provider]
 }
