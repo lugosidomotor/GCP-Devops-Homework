@@ -24,7 +24,7 @@ variable "subnetwork_name" {
 variable "cluster_name" {
   description = "Name of the GKE cluster"
   type        = string
-  default     = "streamlit-cluster"
+  default     = "superlinked-cluster"
 }
 
 variable "gpu_node_required" {
