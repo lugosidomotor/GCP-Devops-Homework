@@ -72,22 +72,22 @@ resource "random_id" "bucket_id" {
 }
 
 output "cluster_name" {
-  value = module.gke.cluster_name
+  value = nonsensitive(module.gke.cluster_name)
 }
 
 output "endpoint" {
-  value = module.gke.endpoint
+  value = nonsensitive(module.gke.endpoint)
 }
 
 output "cluster_ca_certificate" {
-  value = module.gke.cluster_ca_certificate
+  value = nonsensitive(module.gke.cluster_ca_certificate)
 }
 
 output "token" {
-  value = data.google_client_config.default.access_token
+  value = nonsensitive(data.google_client_config.default.access_token)
 }
 
 output "kubeconfig_content" {
-  value = local_file.kubeconfig.content
+  value = nonsensitive(local_file.kubeconfig.content)
 }
 
