@@ -17,7 +17,7 @@ resource "google_service_account" "sa" {
 
 resource "google_storage_bucket_iam_member" "member" {
   bucket = google_storage_bucket.bucket.name
-  role   = "roles/storage.objectViewer"
+  role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.sa.email}"
 }
 
