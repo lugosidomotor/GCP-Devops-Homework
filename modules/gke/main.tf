@@ -19,6 +19,7 @@ resource "google_container_node_pool" "primary_nodes" {
     preemptible  = false
     machine_type = "n1-standard-1"
 
+    service_account = google_service_account.sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
