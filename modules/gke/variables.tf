@@ -33,7 +33,7 @@ variable "default_node_type" {
 variable "gpu_node_type" {
   description = "Machine type for GPU nodes"
   type        = string
-  default     = "n1-standard-4"  # This is just an example, choose an appropriate GPU-enabled machine type
+  default     = "n1-standard-4" # This is just an example, choose an appropriate GPU-enabled machine type
 }
 
 variable "service_account_email" {

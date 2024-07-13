@@ -4,9 +4,9 @@ provider "google" {
 }
 
 data "google_container_cluster" "my_cluster" {
-  name     = module.gke.cluster_name
-  location = var.region
-  project  = var.project_id
+  name       = module.gke.cluster_name
+  location   = var.region
+  project    = var.project_id
   depends_on = [module.gke]
 }
 
