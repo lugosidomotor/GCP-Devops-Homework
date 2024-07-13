@@ -23,3 +23,21 @@ variable "node_machine_type" {
   type        = string
   default     = "n1-standard-1"
 }
+
+variable "gpu_node_required" {
+  description = "Whether GPU nodes are required"
+  type        = bool
+  default     = false
+}
+
+variable "default_node_type" {
+  description = "Default machine type for non-GPU nodes"
+  type        = string
+  default     = "n1-standard-2"
+}
+
+variable "gpu_node_type" {
+  description = "Machine type for GPU nodes"
+  type        = string
+  default     = "n1-standard-4"  # This is just an example, choose an appropriate GPU-enabled machine type
+}
