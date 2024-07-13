@@ -11,8 +11,8 @@ resource "random_string" "random_id" {
 }
 
 resource "google_service_account" "sa" {
-  account_id   = "streamlit-service-account-${random_string.random_id.result}"
-  display_name = "Streamlit Service Account"
+  account_id   = "sa-${random_string.random_id.result}"
+  display_name = "Service Account"
 }
 
 resource "google_storage_bucket_iam_member" "member" {
