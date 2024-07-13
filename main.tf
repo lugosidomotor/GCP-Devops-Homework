@@ -51,7 +51,6 @@ module "storage" {
   bucket_name = "streamlit-bucket-${random_id.bucket_id.hex}"
 }
 
-# Deploy Streamlit using Helm
 resource "helm_release" "streamlit" {
   name       = "streamlit"
   repository = "https://samdobson.github.io/helm"
@@ -59,7 +58,6 @@ resource "helm_release" "streamlit" {
   namespace  = "default"
 }
 
-# Deploy MLflow using Helm
 resource "helm_release" "mlflow" {
   name       = "mlflow"
   repository = "oci://registry-1.docker.io/bitnamicharts"
