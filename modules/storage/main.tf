@@ -20,11 +20,3 @@ resource "google_storage_bucket_iam_member" "member" {
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.sa.email}"
 }
-
-output "bucket_name" {
-  value = google_storage_bucket.bucket.name
-}
-
-output "service_account_email" {
-  value = google_service_account.sa.email
-}
