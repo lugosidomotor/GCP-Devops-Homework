@@ -35,3 +35,8 @@ variable "gpu_node_type" {
   type        = string
   default     = "n1-standard-4"  # This is just an example, choose an appropriate GPU-enabled machine type
 }
+
+variable "service_account_email" {
+  description = "The email of the service account to be used by the node pool"
+  type        = string
+}
