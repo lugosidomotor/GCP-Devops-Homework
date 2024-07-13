@@ -25,6 +25,11 @@ on:
         required: false
         type: string
         default: 'dev'
+      gpu-node:
+        description: 'GPU Node Required'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   terraform_apply:
@@ -96,6 +101,7 @@ jobs:
           -var="project_id=${{ secrets.PROJECTID }}" \
           -var="region=${{ github.event.inputs.gcp-region }}" \
           -var="cluster_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
+          -var="gpu_node_required=${{ github.event.inputs.gpu-node }}" \
           -auto-approve
 
     # Check if linting made any changes
