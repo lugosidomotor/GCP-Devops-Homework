@@ -50,23 +50,44 @@ resource "local_file" "kubeconfig" {
 data "google_client_config" "default" {}
 
 # Deploy Streamlit using Helm
-resource "helm_release" "streamlit" {
-  name       = "streamlit"
-  repository = "https://samdobson.github.io/helm"
-  chart      = "streamlit"
-  namespace  = "default"
-  depends_on = [local_file.kubeconfig]
-}
+#resource "helm_release" "streamlit" {
+#  name       = "streamlit"
+#  repository = "https://samdobson.github.io/helm"
+#  chart      = "streamlit"
+#  namespace  = "default"
+#  depends_on = [local_file.kubeconfig]
+#}
 
 # Deploy MLflow using Helm
-resource "helm_release" "mlflow" {
-  name       = "mlflow"
-  repository = "oci://registry-1.docker.io/bitnamicharts"
-  chart      = "mlflow"
-  namespace  = "default"
-  depends_on = [local_file.kubeconfig]
-}
+#resource "helm_release" "mlflow" {
+#  name       = "mlflow"
+#  repository = "oci://registry-1.docker.io/bitnamicharts"
+#  chart      = "mlflow"
+#  namespace  = "default"
+#  depends_on = [local_file.kubeconfig]
+#}
 
 resource "random_id" "bucket_id" {
   byte_length = 8
 }
+
+output "cluster_name" {
+  value = module.gke.cluster_name
+}
+
+output "endpoint" {
+  value = module.gke.endpoint
+}
+
+output "cluster_ca_certificate" {
+  value = module.gke.cluster_ca_certificate
+}
+
+output "token" {
+  value = data.google_client_config.default.access_token
+}
+
+output "kubeconfig_content" {
+  value = local_file.kubeconfig.content
+}
+
