@@ -18,12 +18,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "node_machine_type" {
-  description = "The machine type for GKE nodes"
-  type        = string
-  default     = "n1-standard-1"
-}
-
 variable "gpu_node_required" {
   description = "Whether GPU nodes are required"
   type        = bool
