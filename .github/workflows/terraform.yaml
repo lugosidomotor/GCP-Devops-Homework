@@ -96,8 +96,6 @@ jobs:
           -var="project_id=${{ secrets.PROJECTID }}" \
           -var="region=${{ github.event.inputs.gcp-region }}" \
           -var="cluster_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
-          -var="network_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
-          -var="subnetwork_name=${{ github.event.inputs.company }}-${{ github.event.inputs.environment }}" \
           -auto-approve
 
     # Check if linting made any changes
