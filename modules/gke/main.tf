@@ -17,7 +17,7 @@ resource "google_container_node_pool" "primary_nodes" {
 
   node_config {
     preemptible  = false
-    machine_type = "n1-standard-1"
+    machine_type = var.node_machine_type
 
     service_account = google_service_account.sa.email
     oauth_scopes = [
