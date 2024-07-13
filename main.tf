@@ -46,6 +46,7 @@ module "gke" {
   network         = module.network.network_name
   subnetwork      = module.network.subnetwork_name
   node_machine_type = var.node_machine_type
+  service_account_email = module.storage.service_account_email
 }
 
 resource "random_id" "bucket_id" {
