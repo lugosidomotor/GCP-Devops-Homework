@@ -14,6 +14,17 @@
 7. Enjoy your MLFLow!
 ![](pics/proof1.jpg)
 
+# Resources Created
+
+Google Kubernetes Engine (GKE) Cluster: Managed Kubernetes cluster to run containerized applications.
+
+Google Compute Network: Custom VPC network to manage network traffic.
+
+Google Compute Subnetwork: Subnets within the VPC to segment the network.
+
+Google Storage Bucket: Object storage to store and retrieve any amount of data.
+
+Google Storage Bucket: Object storage to store terraform state.
 
 # 🔄 GitHub Actions Workflow
 
