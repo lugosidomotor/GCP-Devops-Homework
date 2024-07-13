@@ -62,8 +62,6 @@ resource "local_file" "kubeconfig" {
   filename = "${path.module}/kubeconfig"
 }
 
-data "google_client_config" "default" {}
-
 # Deploy Streamlit using Helm
 resource "helm_release" "streamlit" {
   name       = "streamlit"
