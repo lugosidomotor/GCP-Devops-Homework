@@ -55,20 +55,6 @@ module "storage" {
   bucket_name = "streamlit-bucket-${random_id.bucket_id.hex}"
 }
 
-resource "helm_release" "streamlit" {
-  name       = "streamlit"
-  repository = "https://samdobson.github.io/helm"
-  chart      = "streamlit"
-  namespace  = "default"
-
-  set {
-    name  = "service.type"
-    value = "LoadBalancer"
-  }
-
-  depends_on = [module.gke]
-}
-
 resource "helm_release" "mlflow" {
   name       = "mlflow"
   repository = "oci://registry-1.docker.io/bitnamicharts"
