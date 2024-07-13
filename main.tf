@@ -3,13 +3,28 @@ provider "google" {
   region  = var.region
 }
 
+data "google_container_cluster" "my_cluster" {
+  name     = var.cluster_name
+  location = var.region
+}
+
+data "google_client_config" "default" {}
+
 provider "kubernetes" {
-  config_path = "${path.module}/kubeconfig"
+  host  = "https://${data.google_container_cluster.my_cluster.endpoint}"
+  token = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(
+    data.google_container_cluster.my_cluster.master_auth[0].cluster_ca_certificate
+  )
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "${path.module}/kubeconfig"
+    host  = "https://${data.google_container_cluster.my_cluster.endpoint}"
+    token = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(
+      data.google_container_cluster.my_cluster.master_auth[0].cluster_ca_certificate
+    )
   }
 }
 
@@ -50,22 +65,20 @@ resource "local_file" "kubeconfig" {
 data "google_client_config" "default" {}
 
 # Deploy Streamlit using Helm
-#resource "helm_release" "streamlit" {
-#  name       = "streamlit"
-#  repository = "https://samdobson.github.io/helm"
-#  chart      = "streamlit"
-#  namespace  = "default"
-#  depends_on = [local_file.kubeconfig]
-#}
+resource "helm_release" "streamlit" {
+  name       = "streamlit"
+  repository = "https://samdobson.github.io/helm"
+  chart      = "streamlit"
+  namespace  = "default"
+}
 
 # Deploy MLflow using Helm
-#resource "helm_release" "mlflow" {
-#  name       = "mlflow"
-#  repository = "oci://registry-1.docker.io/bitnamicharts"
-#  chart      = "mlflow"
-#  namespace  = "default"
-#  depends_on = [local_file.kubeconfig]
-#}
+resource "helm_release" "mlflow" {
+  name       = "mlflow"
+  repository = "oci://registry-1.docker.io/bitnamicharts"
+  chart      = "mlflow"
+  namespace  = "default"
+}
 
 resource "random_id" "bucket_id" {
   byte_length = 8
