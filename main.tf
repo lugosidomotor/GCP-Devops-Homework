@@ -68,6 +68,8 @@ resource "helm_release" "streamlit" {
     name  = "service.type"
     value = "LoadBalancer"
   }
+
+  depends_on = [module.gke]
 }
 
 resource "helm_release" "mlflow" {
@@ -85,4 +87,6 @@ resource "helm_release" "mlflow" {
     name  = "tracking.service.type"
     value = "LoadBalancer"
   }
+
+  depends_on = [module.gke]
 }
