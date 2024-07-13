@@ -47,6 +47,10 @@ module "gke" {
   subnetwork      = module.network.subnetwork_name
 }
 
+resource "random_id" "bucket_id" {
+  byte_length = 8
+}
+
 module "storage" {
   source      = "./modules/storage"
   project_id  = var.project_id
@@ -58,6 +62,11 @@ resource "helm_release" "streamlit" {
   repository = "https://samdobson.github.io/helm"
   chart      = "streamlit"
   namespace  = "default"
+
+  set {
+    name  = "service.type"
+    value = "LoadBalancer"
+  }
 }
 
 resource "helm_release" "mlflow" {
@@ -65,8 +74,14 @@ resource "helm_release" "mlflow" {
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "mlflow"
   namespace  = "default"
-}
 
-resource "random_id" "bucket_id" {
-  byte_length = 8
+  set {
+    name  = "service.type"
+    value = "LoadBalancer"
+  }
+
+  set {
+    name  = "tracking.service.type"
+    value = "LoadBalancer"
+  }
 }
