@@ -52,7 +52,7 @@ resource "random_id" "bucket_id" {
 module "storage" {
   source      = "./modules/storage"
   project_id  = var.project_id
-  bucket_name = "streamlit-bucket-${random_id.bucket_id.hex}"
+  bucket_name = "superlinked-bucket-${random_id.bucket_id.hex}"
 }
 
 resource "helm_release" "mlflow" {
