@@ -1,0 +1,16 @@
+# Terraform files
+.terraform.lock.hcl
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Terraform plan file
+tfplan
+
+# Terraform binary
+terraform_*.zip
+
+kubeconfig
+
+# License file
+LICENSE.txt
