@@ -11,7 +11,7 @@
 6. Trigger the workflow manually from the Actions tab in the GitHub repository
 ![](pics/proof0.jpg)
 
-7. TEnjoy your MLFLow!
+7. Enjoy your MLFLow!
 ![](pics/proof1.jpg)
 
 
