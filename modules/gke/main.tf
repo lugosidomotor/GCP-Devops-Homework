@@ -18,7 +18,7 @@ resource "google_container_node_pool" "primary_nodes" {
   node_config {
     preemptible  = false
     machine_type = var.gpu_node_required ? var.gpu_node_type : var.default_node_type
-    service_account = google_service_account.sa.email
+    service_account = var.service_account_email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
