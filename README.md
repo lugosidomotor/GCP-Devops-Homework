@@ -50,6 +50,8 @@ Please submit your Terraform code and documentation in this GitHub repository, o
 
 Good luck, and we look forward to reviewing your solution!
 
+# SOLUTION:
+
 # 🚀 How to Use:
 
 1. Create a SP
